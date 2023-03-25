@@ -9,7 +9,7 @@ void setup() {
 
 void output_timestamp()
 {
-  const auto now = millis();
+  const auto now = millis() * 2;
   std::stringstream ss;
   ss << now << "\r\n";
   const auto output = ss.str();
