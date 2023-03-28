@@ -66,13 +66,12 @@ class Driver:
 
 
 def main():
-    a = Driver(sys.argv[1])
-    b = Driver(sys.argv[2])
+    drivers = [Driver(a) for a in sys.argv[1:]]
 
     until = time.monotonic() + PERIOD
     while True:
-        a.drive()
-        b.drive()
+        for driver in drivers:
+            driver.drive()
         wait_for = until - time.monotonic()
         if wait_for > 0:
             time.sleep(wait_for)
