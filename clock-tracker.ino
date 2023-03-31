@@ -1,10 +1,11 @@
 #include <sstream>
 
+const auto BAUD = 9600;
 std::array<uint8_t, 256> buffer;
 
 void setup() {
     pinMode(LED_BUILTIN, OUTPUT);
-    Serial.begin(115200);
+    Serial.begin(BAUD);
 }
 
 void output_timestamp()
