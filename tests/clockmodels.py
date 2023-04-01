@@ -1,4 +1,5 @@
 from itertools import cycle
+from scipy.optimize import minimize_scalar
 
 class BaseClock:
 
@@ -12,6 +13,13 @@ class BaseClock:
         diff = host_time - self._first_host_timestamp
         return self._start + self.compute(diff)
 
+    def inverse(self, timestamp):
+        res = minimize_scalar(
+            lambda x: abs(self.timestamp(x) - timestamp)
+        )
+        return res.x
+
+
 
 class LinearClock(BaseClock):
 
@@ -21,6 +29,11 @@ class LinearClock(BaseClock):
 
     def compute(self, diff):
         return self._slope * diff
+
+
+    def inverse(self, timestamp):
+        tdiff = timestamp - self._start
+        return self._first_host_timestamp + tdiff / self._slope
 
 
 class PiecewiseClock(BaseClock):
