@@ -10,6 +10,9 @@ df = pd.read_csv(sys.argv[1])
 # This computes a fit to the skewed exponorm
 # that seems to work well for the roundtrip
 # UART communication I measured.
+#
+# https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.exponnorm.html#scipy-stats-exponnorm
+# https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.rv_continuous.fit.html#scipy.stats.rv_continuous.fit
 K, mu, sigma = exponnorm.fit(df["roundtrip"])
 loc = mu
 scale = sigma
