@@ -4,6 +4,7 @@ import serial
 import sys
 import time
 
+from clocktracker import ClockTracker
 
 PERIOD = 0.1
 BAUD = 115200
@@ -23,23 +24,30 @@ class Driver:
             data += self._conn.read(1)
             if data[-1] == 10:
                 break
-        end = time.monotonic()
-        estimated_communication_time = (3 + len(data)) * (1 + 8 + 1) / BAUD
-        roundtrip = end - start
-        ediff = roundtrip - estimated_communication_time
-        print("roundtrip", roundtrip, ediff, estimated_communication_time)
-        self._tracker.feed(start, int(data.decode("ascii").strip()), end)
+        if data.startswith(b"b"):
+            button_press = int(data.decode("ascii").split()[1])
+            print(
+                self._port,
+                "button",
+                self._tracker.seconds_for_timestamp(button_press),
+            )
+        else:
+            end = time.monotonic()
+            estimated_communication_time = (3 + len(data)) * (1 + 8 + 1) / BAUD
+            roundtrip = end - start
+            ediff = roundtrip - estimated_communication_time
+            self._tracker.feed(start, int(data.decode("ascii").strip()), end)
 
-        when = (start + end) / 2
-        estimated_time = self._tracker.seconds_for_timestamp(self._tracker._last_timestamp)
-        print(
-            self._port,
-            self._tracker._factor,
-            "when",
-            when,
-            "estimated",
-            estimated_time,
-        )
+            when = (start + end) / 2
+            estimated_time = self._tracker.seconds_for_timestamp(self._tracker._last_timestamp)
+            print(
+                self._port,
+                self._tracker._factor,
+                "when",
+                when,
+                "estimated",
+                estimated_time,
+            )
 
 
 def main():
